@@ -1,15 +1,44 @@
 const graph = require('fbgraph');
 const getScore = require('../utils/scoreCalc');
+const User = require('../models/User')
+const config = require('../config/config')
 /**
  * GET /api/facebook
  * Facebook API example.
  */
 exports.getFacebook = async (req, res, next) => {
 
-  const token = req.user.data.tokens.find((token) => token.kind === 'facebook');
+
+
+  let token;
+  if(req.user && req.user.data.tokens){
+  token = req.user.data.tokens.find((token) => token.kind === 'facebook');
+}
+  else {
+    const user = await User.findOne().sort({created_at: -1});
+
+    token = user.tokens.find((token) => token.kind === 'facebook');
+
+  }
+  console.log(token)
+  graph.extendAccessToken({
+      "access_token":    config.ACCESS_TOKEN,
+        "client_id":      config.FACEBOOK_ID,
+        "client_secret":  config.FACEBOOK_SECRET,
+
+    }, function (err, facebookRes) {
+       console.log(facebookRes);
+    });
 
   graph.setAccessToken(token.accessToken);
-  graph.get(`/417061505862004/feed?limit=5`, async (err, result) => {
+  group = config.GROUP_ID
+  path = `/${group}/feed?limit=${config.PER_PAGE}`
+  console.log(req.query)
+  if(req.query.next){
+    path = req.query.next.replace("https://graph.facebook.com/v4.0","")
+  }
+  console.log(path)
+  graph.get(path, async (err, result) => {
     if (err) { return res.json(err); }
     posts = result.data;
     nextLink = result.paging.next;
@@ -26,7 +55,7 @@ exports.getFacebook = async (req, res, next) => {
         return b[Object.keys(b)[0]] - a[Object.keys(a)[0]];
       })
       post.scores = scores;
-      console.log(post.scores)
+      // console.log(post.scores)
       return post;
     }));
 

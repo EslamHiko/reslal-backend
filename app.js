@@ -90,18 +90,19 @@ app.post('/signup', userController.postSignup);
 app.get('/account/unlink/:provider', passportConfig.isAuthenticated, userController.getOauthUnlink);
 
 
-app.get('/', passportConfig.isAuthenticated, apiController.getFacebook);
+app.get('/', apiController.getFacebook);
 
 app.get('/user', passportConfig.isAuthenticated,(req,res)=>{
-  return res.json(user);
+  return res.json(req.user);
 });
 
 app.get('/auth/facebook', passport.authenticate('facebook', { scope: ['email', 'public_profile'] }));
 app.get('/auth/facebook/callback', passport.authenticate('facebook', { failureRedirect: 'https://localhost:3000/' }), (req, res) => {
   // we can set expiration time using sync
+  
   const token =jwt.sign({data: req.user}, 'secret',
   { expiresIn: 60 * 60 * 60});
-  res.redirect('http://localhost:3000/?token='+token);
+  res.redirect('http://localhost:3000/token?token='+token);
 });
 
 
@@ -118,7 +119,7 @@ app.post('/lists/delete',  passportConfig.isAuthenticated, listController.delete
 app.get('/lists/:id',  passportConfig.isAuthenticated, listController.getList);
 
 
-app.get('/cats',  passportConfig.isAuthenticated, categoryController.getCats);
+app.get('/cats', categoryController.getCats);
 app.post('/cats/save',  passportConfig.isAuthenticated, categoryController.save);
 app.post('/cats/delete',  passportConfig.isAuthenticated, categoryController.delete);
 app.get('/cats/:id',  passportConfig.isAuthenticated, categoryController.getCat);

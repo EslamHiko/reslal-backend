@@ -67,7 +67,6 @@ passport.use(new FacebookStrategy({
           user.profile.gender = user.profile.gender || profile._json.gender;
           user.profile.picture = user.profile.picture || `https://graph.facebook.com/${profile.id}/picture?type=large`;
           user.save((err) => {
-            req.flash('info', { msg: 'Facebook account has been linked.' });
             done(err, user);
           });
         });
@@ -124,7 +123,7 @@ exports.isAuthenticated = (req, res, next) => {
     console.log(decoded)
     // Add user from payload
     req.user = (decoded);
-    console.log("WTF")
+
     next();
   } catch (e) {
     res.status(400).json({ msg: 'Token is not valid' });
