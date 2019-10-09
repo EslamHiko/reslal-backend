@@ -7,7 +7,7 @@ const config = {
   SESSION_SECRET: 'top_secret',
   ACCESS_TOKEN: 'EAAHHQP9v58kBANR8s8bOMkVyZBgaRRhRESCkVKmmUfksUPYqYTEWkZCKTzuIrwwhrG3Lu29TM3nDUvYyyRUukVc0zeWTa4Vn7YZCxMOndXlhrZAWa4vrLuL4JiOYqrZCVZAaAxXrHIu5AZBBrPh0nmskLeI0LCm6N5GUsi3m5xs8gW5yn6ttJkQ',
   GROUP_ID: '417061505862004',
-  PER_PAGE:6
+  PER_PAGE:12
 };
 
 module.exports = config;

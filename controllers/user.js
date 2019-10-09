@@ -49,18 +49,6 @@ exports.postLogin = (req, res, next) => {
   })(req, res, next);
 };
 
-/**
- * GET /logout
- * Log out.
- */
-exports.logout = (req, res) => {
-  req.logout();
-  req.session.destroy((err) => {
-    if (err) console.log('Error : Failed to destroy the session during logout.', err);
-    req.user = null;
-    res.redirect('/');
-  });
-};
 
 
 /**
@@ -166,17 +154,13 @@ exports.getOauthUnlink = (req, res, next) => {
       !(user.email && user.password)
       && tokensWithoutProviderToUnlink.length === 0
     ) {
-      req.flash('errors', {
-        msg: `The ${_.startCase(_.toLower(provider))} account cannot be unlinked without another form of login enabled.`
-          + ' Please link another account or add an email address and password.'
-      });
-      return res.redirect('/account');
+
+      res.json({success:true});
     }
     user.tokens = tokensWithoutProviderToUnlink;
     user.save((err) => {
       if (err) { return next(err); }
-      req.flash('info', { msg: `${_.startCase(_.toLower(provider))} account has been unlinked.` });
-      res.redirect('/account');
+      res.json({success:true});
     });
   });
 };
