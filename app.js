@@ -83,8 +83,9 @@ app.use(lusca.xssProtection(true));
 
 app.post('/login', userController.postLogin);
 app.get('/logout', userController.logout);
-app.post('/signup', userController.postSignup);
+app.post('/register', userController.postSignup);
 
+app.post('/edit', passportConfig.isAuthenticated,userController.update);
 
 
 app.get('/', apiController.getFacebook);
