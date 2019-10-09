@@ -83,11 +83,8 @@ app.use(lusca.xssProtection(true));
 
 app.post('/login', userController.postLogin);
 app.get('/logout', userController.logout);
-app.post('/forgot', userController.postForgot);
-app.get('/reset/:token', userController.getReset);
-app.post('/reset/:token', userController.postReset);
 app.post('/signup', userController.postSignup);
-app.get('/account/unlink/:provider', passportConfig.isAuthenticated, userController.getOauthUnlink);
+
 
 
 app.get('/', apiController.getFacebook);
@@ -99,7 +96,7 @@ app.get('/user', passportConfig.isAuthenticated,(req,res)=>{
 app.get('/auth/facebook', passport.authenticate('facebook', { scope: ['email', 'public_profile'] }));
 app.get('/auth/facebook/callback', passport.authenticate('facebook', { failureRedirect: 'https://localhost:3000/' }), (req, res) => {
   // we can set expiration time using sync
-  
+
   const token =jwt.sign({data: req.user}, 'secret',
   { expiresIn: 60 * 60 * 60});
   res.redirect('http://localhost:3000/token?token='+token);
@@ -124,6 +121,10 @@ app.post('/cats/save',  passportConfig.isAuthenticated, categoryController.save)
 app.post('/cats/delete',  passportConfig.isAuthenticated, categoryController.delete);
 app.get('/cats/:id',  passportConfig.isAuthenticated, categoryController.getCat);
 
+app.get('/users', passportConfig.isAuthenticated,  passportConfig.isSadmin, userController.getUsers);
+app.post('/users/save',  passportConfig.isAuthenticated, passportConfig.isSadmin, userController.save);
+app.post('/users/delete',  passportConfig.isAuthenticated, passportConfig.isSadmin, userController.delete);
+app.get('/users/:id',  passportConfig.isAuthenticated, passportConfig.isSadmin, userController.getUser);
 
 /**
  * Start Express server.

@@ -37,7 +37,6 @@ const userSchema = new mongoose.Schema({
     name: String,
     gender: String,
     location: String,
-    website: String,
     picture: String
   }
 }, { timestamps: true });

@@ -36,7 +36,7 @@ passport.use(new LocalStrategy({ usernameField: 'email' }, (email, password, don
       if (err) { return done(err); }
       if (isMatch) {
 
-        return done(null, token,user);
+        return done(null,user);
       }
       return done(null, false, { msg: 'Invalid email or password.' });
     });
@@ -65,7 +65,7 @@ passport.use(new FacebookStrategy({
           user.tokens.push({ kind: 'facebook', accessToken });
           user.profile.name = user.profile.name || `${profile.name.givenName} ${profile.name.familyName}`;
           user.profile.gender = user.profile.gender || profile._json.gender;
-          user.profile.picture = user.profile.picture || `https://graph.facebook.com/${profile.id}/picture?type=large`;
+          // user.profile.picture = user.profile.picture || `https://graph.facebook.com/${profile.id}/picture?type=large`;
           user.save((err) => {
             done(err, user);
           });
@@ -90,7 +90,7 @@ passport.use(new FacebookStrategy({
           user.tokens.push({ kind: 'facebook', accessToken });
           user.profile.name = `${profile.name.givenName} ${profile.name.familyName}`;
           user.profile.gender = profile._json.gender;
-          user.profile.picture = `https://graph.facebook.com/${profile.id}/picture?type=large`;
+          // user.profile.picture = `https://graph.facebook.com/${profile.id}/picture?type=large`;
           user.profile.location = (profile._json.location) ? profile._json.location.name : '';
           user.save((err) => {
             done(err, user);
@@ -131,6 +131,12 @@ exports.isAuthenticated = (req, res, next) => {
 
 };
 
+exports.isSadmin = (req,res,next) =>{
+  if(req.user.data.sadmin){
+    return next();
+  }
+  return res.json({success:false,msg:'unauthorized'});
+}
 /**
  * Authorization Required middleware.
  */
